@@ -34,7 +34,12 @@ col3.metric("Humidity", "86%", "4%")
 
 # Row B
 seattle_weather = pd.read_csv('https://raw.githubusercontent.com/tvst/plost/master/data/seattle-weather.csv', parse_dates=['date'])
-stocks = pd.read_csv('https://raw.githubusercontent.com/dataprofessor/data/master/stocks_toy.csv')
+data = pd.read_csv('Litros (1).csv')
+litros_por_linea = data.groupby('Línea')['Ctd.total reg.'].sum()
+total_litros = litros_por_linea.sum()
+porcentajes_por_linea = (litros_por_linea / total_litros) * 100
+porcentajes_por_linea = porcentajes_por_linea.reset_index()
+porcentajes_por_linea.columns = ['Línea', 'Porcentaje']
 
 c1, c2 = st.columns((7,3))
 with c1:
@@ -52,9 +57,9 @@ with c1:
 with c2:
     st.markdown('### Donut chart')
     plost.donut_chart(
-        data=stocks,
-        theta=donut_theta,
-        color='company',
+        data=porcentajes_por_linea,
+        theta='Porcentaje',
+        color='Línea',
         legend='bottom', 
         use_container_width=True)
 
