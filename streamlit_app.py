@@ -33,8 +33,12 @@ time_hist_color = st.sidebar.selectbox('Color by', ('temp_min', 'temp_max'))
 st.sidebar.subheader('Donut chart parameter')
 donut_theta = st.sidebar.selectbox('Select data', ('q2', 'q3'))
 
+st.sidebar.subheader('Paint Consumption Trend')
+paint_option = st.sidebar.selectbox('Select Paint or All', ['All'] + list(paints))
+line_option = st.sidebar.selectbox('Select Line or All', ['All'] + list(lines))
+year_option = st.sidebar.selectbox('Select Year or All', ['All'] + list(paint_years))
+
 st.sidebar.subheader('Line chart parameters')
-plot_data = st.sidebar.multiselect('Select data', ['temp_min', 'temp_max'], ['temp_min', 'temp_max'])
 plot_height = st.sidebar.slider('Specify plot height', 200, 500, 250)
 
 st.sidebar.markdown('''
@@ -93,10 +97,6 @@ with c2:
 
 # Row C: Paint consumption trend line chart
 st.markdown('### Paint Consumption Line Chart')
-
-paint_option = st.selectbox('Select Paint or All', ['All'] + list(paints))
-line_option = st.selectbox('Select Line or All', ['All'] + list(lines))
-year_option = st.selectbox('Select Year or All', ['All'] + list(paint_years))
 
 # Filter data based on selections
 if paint_option == 'All' and line_option == 'All' and year_option == 'All':
