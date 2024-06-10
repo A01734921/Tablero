@@ -127,6 +127,8 @@ with c2:
     # Verify and prepare the color_discrete_sequence argument
     colors = [ternium_light_orange, ternium_dark_orange]
     
+    st.write(litros_por_linea)  # Debugging output to verify data
+
     plost.donut_chart(
         data=litros_por_linea,
         theta='Porcentaje',
