@@ -105,10 +105,10 @@ with c1:
         investment_data = paint_data
 
     # Verify the existence of 'Valor total' column
-    if 'Valor total' in investment_data.columns:
-        investment_summary = investment_data.groupby('Texto breve de material')['Valor total'].sum().reset_index()
+    if '    Valor var.' in investment_data.columns:
+        investment_summary = investment_data.groupby('Texto breve de material')['    Valor var.'].sum().reset_index()
         fig, ax = plt.subplots()
-        investment_summary.plot(kind='bar', x='Texto breve de material', y='Valor total', ax=ax, color=ternium_orange, legend=False)
+        investment_summary.plot(kind='bar', x='Texto breve de material', y='    Valor var.', ax=ax, color=ternium_orange, legend=False)
         ax.set_title('Inversión en las Top 20 Pinturas', fontsize=16, fontweight='bold', color='white')
         ax.set_xlabel('Pintura', fontsize=14, fontweight='bold', color='white')
         ax.set_ylabel('Valor', fontsize=14, fontweight='bold', color='white')
