@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.express as px
 import plost
 
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
@@ -116,28 +116,14 @@ else:
                             (paint_data['Línea'] == line_option) & 
                             (paint_data['Registrado'].str[:4] == year_option)]
 
-# Debugging: Display the filtered data
-st.write("Filtered trend data:", trend_data)
-
 # Summarize data by month
 trend_data['Month'] = pd.to_datetime(trend_data['Registrado']).dt.to_period('M')
 monthly_trend = trend_data.groupby('Month')['Ctd.total reg.'].sum().reset_index()
 monthly_trend['Month'] = monthly_trend['Month'].dt.to_timestamp()
 
-# Debugging: Display the summarized data
-st.write("Monthly trend data:", monthly_trend)
-
-# Ensure datetime conversion is correct
-monthly_trend['Month'] = pd.to_datetime(monthly_trend['Month'])
-
-# Plotting with matplotlib
+# Plotting with plotly
 if not monthly_trend.empty:
-    fig, ax = plt.subplots()
-    ax.plot(monthly_trend['Month'], monthly_trend['Ctd.total reg.'], marker='o', linestyle='-')
-    ax.set_title('Monthly Paint Consumption Trend')
-    ax.set_xlabel('Month')
-    ax.set_ylabel('Consumption')
-    ax.grid(True)
-    st.pyplot(fig)
+    fig = px.line(monthly_trend, x='Month', y='Ctd.total reg.', title='Monthly Paint Consumption Trend')
+    st.plotly_chart(fig)
 else:
     st.write("No data available for the selected options.")
