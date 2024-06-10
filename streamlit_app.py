@@ -88,22 +88,22 @@ col1.metric("Metros Cuadrados", f"{metros_cuadrados:,.2f} m²")
 col2.metric("Tiempo en Horas", f"{tiempo_horas:,.2f} horas")
 col3.metric("Metros por Hora", f"{metros_por_hora:,.2f} m/h")
 
+# Apply filters to paint data
+filtered_paint_data = paint_data.copy()
+if paint_option != 'All':
+    filtered_paint_data = filtered_paint_data[filtered_paint_data['Texto breve de material'] == paint_option]
+if line_option != 'All':
+    filtered_paint_data = filtered_paint_data[filtered_paint_data['Línea'] == line_option]
+if year_option != 'All':
+    filtered_paint_data = filtered_paint_data[filtered_paint_data['Registrado'].dt.year == int(year_option)]
+
 # Row B
 c1, c2 = st.columns((7,3))
 with c1:
     st.markdown('### Investment by Paint')
-    if paint_option != 'All':
-        investment_data = paint_data[paint_data['Texto breve de material'] == paint_option]
-    elif line_option != 'All':
-        investment_data = paint_data[paint_data['Línea'] == line_option]
-    elif year_option != 'All':
-        investment_data = paint_data[paint_data['Registrado'].dt.year == int(year_option)]
-    else:
-        investment_data = paint_data
-
     # Verify the existence of 'Valor total' column
-    if '    Valor var.' in investment_data.columns:
-        investment_summary = investment_data.groupby('Texto breve de material')['    Valor var.'].sum().reset_index()
+    if '    Valor var.' in filtered_paint_data.columns:
+        investment_summary = filtered_paint_data.groupby('Texto breve de material')['    Valor var.'].sum().reset_index()
         fig, ax = plt.subplots()
         investment_summary.plot(kind='bar', x='Texto breve de material', y='    Valor var.', ax=ax, color=ternium_light_orange, legend=False)
         ax.set_title('Inversión en las Top 20 Pinturas', fontsize=16, fontweight='bold', color='white')
@@ -120,8 +120,7 @@ with c1:
 
 with c2:
     st.markdown('### Donut chart')
-    data = paint_data
-    litros_por_linea = data.groupby('Línea')['Ctd.total reg.'].sum().reset_index()
+    litros_por_linea = filtered_paint_data.groupby('Línea')['Ctd.total reg.'].sum().reset_index()
     litros_por_linea['Porcentaje'] = (litros_por_linea['Ctd.total reg.'] / litros_por_linea['Ctd.total reg.'].sum()) * 100
     litros_por_linea.columns = ['Línea', 'Ctd_total_reg', 'Porcentaje']
     
@@ -139,28 +138,8 @@ with c2:
 # Row C: Paint consumption trend line chart
 st.markdown('### Paint Consumption Line Chart')
 
-# Filter data based on selections
-if paint_option == 'All' and line_option == 'All' and year_option == 'All':
-    trend_data = paint_data
-elif paint_option == 'All' and line_option == 'All':
-    trend_data = paint_data[paint_data['Registrado'].dt.year == int(year_option)]
-elif paint_option == 'All' and year_option == 'All':
-    trend_data = paint_data[paint_data['Línea'] == line_option]
-elif line_option == 'All' and year_option == 'All':
-    trend_data = paint_data[paint_data['Texto breve de material'] == paint_option]
-elif paint_option == 'All':
-    trend_data = paint_data[(paint_data['Línea'] == line_option) & (paint_data['Registrado'].dt.year == int(year_option))]
-elif line_option == 'All':
-    trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & (paint_data['Registrado'].dt.year == int(year_option))]
-elif year_option == 'All':
-    trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & (paint_data['Línea'] == line_option)]
-else:
-    trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & 
-                            (paint_data['Línea'] == line_option) & 
-                            (paint_data['Registrado'].dt.year == int(year_option))]
-
 # Summarize data by month
-trend_data = trend_data.copy()  # Avoid SettingWithCopyWarning
+trend_data = filtered_paint_data.copy()
 trend_data['Month'] = trend_data['Registrado'].dt.to_period('M')
 monthly_trend = trend_data.groupby('Month')['Ctd.total reg.'].sum().reset_index()
 monthly_trend['Month'] = monthly_trend['Month'].dt.to_timestamp()
@@ -186,5 +165,4 @@ if not monthly_trend.empty:
     st.pyplot(fig)
 else:
     st.write("No data available for the selected options.")
-
 
