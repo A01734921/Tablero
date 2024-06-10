@@ -35,7 +35,6 @@ with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Load data
-seattle_weather = pd.read_csv('seattle-weather.csv', parse_dates=['date'])
 rend_usuarios = pd.read_csv('Rend_usuarios.csv')
 paint_data = pd.read_csv('LitrosFiltrada (1).csv', parse_dates=['Registrado'])
 
@@ -50,18 +49,12 @@ lines = paint_data['Línea'].unique()
 paints = paint_data['Texto breve de material'].unique()
 paint_years = paint_data['Registrado'].dt.year.dropna().unique()
 
-st.sidebar.header('Dashboard `version 2`')
+st.sidebar.header('Dashboard Descriptivo)
 
 st.sidebar.subheader('Select User, Year, and Month')
 selected_user = st.sidebar.selectbox('User', users)
 selected_year = st.sidebar.selectbox('Year', years)
 selected_month = st.sidebar.selectbox('Month', months)
-
-st.sidebar.subheader('Heat map parameter')
-time_hist_color = st.sidebar.selectbox('Color by', ('temp_min', 'temp_max'))
-
-st.sidebar.subheader('Donut chart parameter')
-donut_theta = st.sidebar.selectbox('Select data', ('q2', 'q3'))
 
 st.sidebar.subheader('Paint Consumption Trend')
 paint_option = st.sidebar.selectbox('Select Paint or All', ['All'] + list(paints))
