@@ -37,7 +37,11 @@ with open('style.css') as f:
 # Load data
 seattle_weather = pd.read_csv('seattle-weather.csv', parse_dates=['date'])
 rend_usuarios = pd.read_csv('Rend_usuarios.csv')
-paint_data = pd.read_csv('LitrosFiltrada (1).csv', parse_dates=['Registrado'])
+paint_data = pd.read_csv('/mnt/data/LitrosFiltrada (1).csv', parse_dates=['Registrado'])
+
+# Display the columns of the dataset
+st.write("Column names in the dataset:")
+st.write(paint_data.columns)
 
 # Convert 'Registrado' column to datetime if not already
 paint_data['Registrado'] = pd.to_datetime(paint_data['Registrado'], errors='coerce')
@@ -100,7 +104,8 @@ with c1:
     else:
         investment_data = paint_data
 
-    if not investment_data.empty:
+    # Verify the existence of 'Valor total' column
+    if 'Valor total' in investment_data.columns:
         investment_summary = investment_data.groupby('Texto breve de material')['Valor total'].sum().reset_index()
         fig, ax = plt.subplots()
         investment_summary.plot(kind='bar', x='Texto breve de material', y='Valor total', ax=ax, color=ternium_orange, legend=False)
@@ -111,7 +116,7 @@ with c1:
         ax.tick_params(axis='y', colors='white')
         st.pyplot(fig)
     else:
-        st.write("No data available for the selected options.")
+        st.write("The 'Valor total' column is not found in the dataset.")
 
 with c2:
     st.markdown('### Donut chart')
@@ -179,3 +184,5 @@ if not monthly_trend.empty:
     st.pyplot(fig)
 else:
     st.write("No data available for the selected options.")
+
+
