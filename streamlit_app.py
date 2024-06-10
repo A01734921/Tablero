@@ -8,9 +8,9 @@ with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Load data
-seattle_weather = pd.read_csv('/mnt/data/seattle-weather.csv', parse_dates=['date'])
-rend_usuarios = pd.read_csv('/mnt/data/Rend_usuarios.csv')
-paint_data = pd.read_csv('/mnt/data/LitrosFiltrada (1).csv')
+seattle_weather = pd.read_csv('seattle-weather.csv', parse_dates=['date'])
+rend_usuarios = pd.read_csv('Rend_usuarios.csv')
+paint_data = pd.read_csv('LitrosFiltrada (1).csv')
 
 # Convert 'Registrado' column to datetime
 paint_data['Registrado'] = pd.to_datetime(paint_data['Registrado'], errors='coerce')
