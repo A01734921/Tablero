@@ -12,13 +12,16 @@ seattle_weather = pd.read_csv('https://raw.githubusercontent.com/tvst/plost/mast
 rend_usuarios = pd.read_csv('Rend_usuarios.csv')
 paint_data = pd.read_csv('LitrosFiltrada (1).csv')
 
+# Convert 'Registrado' column to datetime
+paint_data['Registrado'] = pd.to_datetime(paint_data['Registrado'], errors='coerce')
+
 # Extract unique values for dropdown menus
 users = rend_usuarios['Usuario'].unique()
 years = rend_usuarios['Mes_Año'].str[:4].unique()
 months = rend_usuarios['Mes_Año'].str[5:7].unique()
 lines = paint_data['Línea'].unique()
 paints = paint_data['Texto breve de material'].unique()
-paint_years = paint_data['Registrado'].str[:4].unique()
+paint_years = paint_data['Registrado'].dt.year.unique()
 
 st.sidebar.header('Dashboard `version 2`')
 
@@ -99,28 +102,28 @@ st.markdown('### Paint Consumption Line Chart')
 if paint_option == 'All' and line_option == 'All' and year_option == 'All':
     trend_data = paint_data
 elif paint_option == 'All' and line_option == 'All':
-    trend_data = paint_data[paint_data['Registrado'].str[:4] == year_option]
+    trend_data = paint_data[paint_data['Registrado'].dt.year == int(year_option)]
 elif paint_option == 'All' and year_option == 'All':
     trend_data = paint_data[paint_data['Línea'] == line_option]
 elif line_option == 'All' and year_option == 'All':
     trend_data = paint_data[paint_data['Texto breve de material'] == paint_option]
 elif paint_option == 'All':
-    trend_data = paint_data[(paint_data['Línea'] == line_option) & (paint_data['Registrado'].str[:4] == year_option)]
+    trend_data = paint_data[(paint_data['Línea'] == line_option) & (paint_data['Registrado'].dt.year == int(year_option))]
 elif line_option == 'All':
-    trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & (paint_data['Registrado'].str[:4] == year_option)]
+    trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & (paint_data['Registrado'].dt.year == int(year_option))]
 elif year_option == 'All':
     trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & (paint_data['Línea'] == line_option)]
 else:
     trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & 
                             (paint_data['Línea'] == line_option) & 
-                            (paint_data['Registrado'].str[:4] == year_option)]
+                            (paint_data['Registrado'].dt.year == int(year_option))]
 
 # Summarize data by month
-trend_data['Month'] = pd.to_datetime(trend_data['Registrado']).dt.to_period('M')
+trend_data['Month'] = trend_data['Registrado'].dt.to_period('M')
 monthly_trend = trend_data.groupby('Month')['Ctd.total reg.'].sum().reset_index()
 monthly_trend['Month'] = monthly_trend['Month'].dt.to_timestamp()
 
 if not monthly_trend.empty:
-    st.line_chart(monthly_trend.set_index('Month'))
+    st.line_chart(monthly_trend.set_index('Month')['Ctd.total reg.'])
 else:
     st.write("No data available for the selected options.")
