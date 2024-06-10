@@ -136,6 +136,10 @@ st.write(monthly_trend)
 st.write("Tipos de datos en monthly_trend:")
 st.write(monthly_trend.dtypes)
 
+# Verificar valores de datos
+st.write("Valores en monthly_trend:")
+st.write(monthly_trend)
+
 if not monthly_trend.empty:
     st.line_chart(monthly_trend.set_index('Month')['Ctd.total reg.'])
 else:
