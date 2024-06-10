@@ -21,7 +21,7 @@ years = rend_usuarios['Mes_Año'].str[:4].unique()
 months = rend_usuarios['Mes_Año'].str[5:7].unique()
 lines = paint_data['Línea'].unique()
 paints = paint_data['Texto breve de material'].unique()
-paint_years = paint_data['Registrado'].dt.year.unique()
+paint_years = paint_data['Registrado'].dt.year.dropna().unique()
 
 st.sidebar.header('Dashboard `version 2`')
 
