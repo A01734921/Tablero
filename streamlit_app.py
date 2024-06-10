@@ -19,6 +19,9 @@ def apply_custom_style():
         "grid.linewidth": 0.5,
         "lines.linewidth": 2,
         "lines.color": "#e31837",  # Ternium orange
+        "legend.facecolor": "#0e1117",
+        "legend.edgecolor": "white",
+        "text.color": "white"
     })
 
 apply_custom_style()
@@ -133,10 +136,6 @@ else:
                             (paint_data['Línea'] == line_option) & 
                             (paint_data['Registrado'].dt.year == int(year_option))]
 
-# Mostrar datos filtrados para depuración
-st.write("Datos filtrados para la gráfica de tendencia:")
-st.write(trend_data)
-
 # Summarize data by month
 trend_data = trend_data.copy()  # Avoid SettingWithCopyWarning
 trend_data['Month'] = trend_data['Registrado'].dt.to_period('M')
@@ -146,22 +145,10 @@ monthly_trend['Month'] = monthly_trend['Month'].dt.to_timestamp()
 # Asegurar que 'Month' es el índice
 monthly_trend.set_index('Month', inplace=True)
 
-# Mostrar datos agrupados por mes para depuración
-st.write("Datos agrupados por mes:")
-st.write(monthly_trend)
-
-# Verificar tipos de datos
-st.write("Tipos de datos en monthly_trend:")
-st.write(monthly_trend.dtypes)
-
-# Verificar valores de datos
-st.write("Valores en monthly_trend:")
-st.write(monthly_trend)
-
 # Graficar si hay datos disponibles
 if not monthly_trend.empty:
     fig, ax = plt.subplots()
-    monthly_trend.plot(ax=ax, color=ternium_orange)
+    monthly_trend.plot(ax=ax, color=ternium_orange, legend=False)
     ax.set_title('Tendencia de Consumo de Pintura', fontsize=16, fontweight='bold', color='white')
     ax.set_xlabel('Mes', fontsize=14, fontweight='bold', color='white')
     ax.set_ylabel('Cantidad Total Registrada', fontsize=14, fontweight='bold', color='white')
@@ -171,6 +158,8 @@ if not monthly_trend.empty:
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
     fig.patch.set_facecolor('#0e1117')
     ax.set_facecolor('#0e1117')
+    # Agregar leyenda personalizada
+    ax.legend(['Ctd. total reg.'], loc='upper right', facecolor='#0e1117', edgecolor='white', fontsize=12)
     st.pyplot(fig)
 else:
     st.write("No data available for the selected options.")
