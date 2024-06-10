@@ -18,7 +18,7 @@ def apply_custom_style():
         "grid.linestyle": "--",
         "grid.linewidth": 0.5,
         "lines.linewidth": 2,
-        "lines.color": "#f5a623",  # Ternium orange
+        "lines.color": "#f5a623",  # Updated to lighter Ternium color
         "legend.facecolor": "#0e1117",
         "legend.edgecolor": "white",
         "text.color": "white"
@@ -26,8 +26,9 @@ def apply_custom_style():
 
 apply_custom_style()
 
-# Color naranja de Ternium
-ternium_orange = '#e31837'
+# Updated Ternium colors
+ternium_light_orange = '#f5a623'
+ternium_dark_orange = '#e31837'
 
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
 
@@ -104,7 +105,7 @@ with c1:
     if '    Valor var.' in investment_data.columns:
         investment_summary = investment_data.groupby('Texto breve de material')['    Valor var.'].sum().reset_index()
         fig, ax = plt.subplots()
-        investment_summary.plot(kind='bar', x='Texto breve de material', y='    Valor var.', ax=ax, color=ternium_orange, legend=False)
+        investment_summary.plot(kind='bar', x='Texto breve de material', y='    Valor var.', ax=ax, color=ternium_light_orange, legend=False)
         ax.set_title('Inversión en las Top 20 Pinturas', fontsize=16, fontweight='bold', color='white')
         ax.set_xlabel('Pintura', fontsize=14, fontweight='bold', color='white')
         ax.set_ylabel('Valor', fontsize=14, fontweight='bold', color='white')
@@ -130,7 +131,8 @@ with c2:
         data=porcentajes_por_linea,
         theta='Porcentaje',
         color='Línea',
-        legend='bottom', 
+        legend='bottom',
+        color_discrete_sequence=[ternium_light_orange, ternium_dark_orange], 
         use_container_width=True)
 
 # Row C: Paint consumption trend line chart
@@ -168,7 +170,7 @@ monthly_trend.set_index('Month', inplace=True)
 # Graficar si hay datos disponibles
 if not monthly_trend.empty:
     fig, ax = plt.subplots()
-    monthly_trend.plot(ax=ax, color=ternium_orange, legend=False)
+    monthly_trend.plot(ax=ax, color=ternium_light_orange, legend=False)
     ax.set_title('Tendencia de Consumo de Pintura', fontsize=16, fontweight='bold', color='white')
     ax.set_xlabel('Mes', fontsize=14, fontweight='bold', color='white')
     ax.set_ylabel('Cantidad Total Registrada', fontsize=14, fontweight='bold', color='white')
