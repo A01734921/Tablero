@@ -18,7 +18,7 @@ def apply_custom_style():
         "grid.linestyle": "--",
         "grid.linewidth": 0.5,
         "lines.linewidth": 2,
-        "lines.color": "#e31837",  # Ternium orange
+        "lines.color": "#f5a623",  # Ternium orange
         "legend.facecolor": "#0e1117",
         "legend.edgecolor": "white",
         "text.color": "white"
