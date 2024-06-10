@@ -37,8 +37,7 @@ with open('style.css') as f:
 # Load data
 seattle_weather = pd.read_csv('seattle-weather.csv', parse_dates=['date'])
 rend_usuarios = pd.read_csv('Rend_usuarios.csv')
-paint_data = pd.read_csv('LitrosFiltrada (1).csv', parse_dates=['Registrado'])
-
+paint_data = pd.read_csv('/mnt/data/LitrosFiltrada (1).csv', parse_dates=['Registrado'])
 
 # Convert 'Registrado' column to datetime if not already
 paint_data['Registrado'] = pd.to_datetime(paint_data['Registrado'], errors='coerce')
@@ -111,6 +110,9 @@ with c1:
         ax.set_ylabel('Valor', fontsize=14, fontweight='bold', color='white')
         ax.tick_params(axis='x', colors='white', rotation=45)
         ax.tick_params(axis='y', colors='white')
+        ax.get_yaxis().get_major_formatter().set_scientific(False)
+        for tick in ax.get_xticklabels():
+            tick.set_horizontalalignment('right')
         st.pyplot(fig)
     else:
         st.write("The 'Valor total' column is not found in the dataset.")
@@ -181,5 +183,3 @@ if not monthly_trend.empty:
     st.pyplot(fig)
 else:
     st.write("No data available for the selected options.")
-
-
