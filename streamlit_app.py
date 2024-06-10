@@ -119,6 +119,7 @@ else:
                             (paint_data['Registrado'].dt.year == int(year_option))]
 
 # Summarize data by month
+trend_data = trend_data.copy()  # Avoid SettingWithCopyWarning
 trend_data['Month'] = trend_data['Registrado'].dt.to_period('M')
 monthly_trend = trend_data.groupby('Month')['Ctd.total reg.'].sum().reset_index()
 monthly_trend['Month'] = monthly_trend['Month'].dt.to_timestamp()
