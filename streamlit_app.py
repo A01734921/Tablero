@@ -8,18 +8,18 @@ import matplotlib.dates as mdates
 # Estilo personalizado para matplotlib
 def apply_custom_style():
     plt.rcParams.update({
-        "axes.facecolor": "#0e1117",
+        "axes.facecolor": "#f5a623",
         "axes.edgecolor": "white",
         "axes.labelcolor": "white",
         "xtick.color": "white",
         "ytick.color": "white",
-        "figure.facecolor": "#0e1117",
+        "figure.facecolor": "#f5a623",
         "grid.color": "gray",
         "grid.linestyle": "--",
         "grid.linewidth": 0.5,
         "lines.linewidth": 2,
         "lines.color": "#f5a623",  # Ternium orange
-        "legend.facecolor": "#0e1117",
+        "legend.facecolor": "#f5a623",
         "legend.edgecolor": "white",
         "text.color": "white"
     })
