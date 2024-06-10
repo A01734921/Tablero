@@ -37,7 +37,7 @@ with open('style.css') as f:
 # Load data
 seattle_weather = pd.read_csv('seattle-weather.csv', parse_dates=['date'])
 rend_usuarios = pd.read_csv('Rend_usuarios.csv')
-paint_data = pd.read_csv('/mnt/data/LitrosFiltrada (1).csv', parse_dates=['Registrado'])
+paint_data = pd.read_csv('LitrosFiltrada (1).csv', parse_dates=['Registrado'])
 
 # Display the columns of the dataset
 st.write("Column names in the dataset:")
