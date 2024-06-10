@@ -133,8 +133,8 @@ monthly_trend['Month'] = pd.to_datetime(monthly_trend['Month'])
 # Plotting with Altair
 if not monthly_trend.empty:
     line_chart = alt.Chart(monthly_trend).mark_line(point=True).encode(
-        x='Month:T',
-        y='Ctd.total reg.:Q',
+        x=alt.X('Month:T', axis=alt.Axis(format='%b %Y')),
+        y=alt.Y('Ctd.total reg.:Q', axis=alt.Axis(title='Consumption')),
         tooltip=['Month:T', 'Ctd.total reg.:Q']
     ).properties(
         title='Monthly Paint Consumption Trend'
@@ -142,4 +142,3 @@ if not monthly_trend.empty:
     st.altair_chart(line_chart, use_container_width=True)
 else:
     st.write("No data available for the selected options.")
-
