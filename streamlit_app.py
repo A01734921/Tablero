@@ -73,7 +73,7 @@ with c1:
     st.line_chart(seattle_weather, x='date', y='temp_min', height=345)
 with c2:
     st.markdown('### Donut chart')
-    data = pd.read_csv('/mnt/data/Litros (1).csv')
+    data = pd.read_csv('Litros (1).csv')
     litros_por_linea = data.groupby('Línea')['Ctd.total reg.'].sum()
     total_litros = litros_por_linea.sum()
     porcentajes_por_linea = (litros_por_linea / total_litros) * 100
