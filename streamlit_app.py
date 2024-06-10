@@ -1,8 +1,12 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
 import plost
 
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
+
+with open('style.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Load data
 seattle_weather = pd.read_csv('https://raw.githubusercontent.com/tvst/plost/master/data/seattle-weather.csv', parse_dates=['date'])
@@ -126,7 +130,14 @@ st.write("Monthly trend data:", monthly_trend)
 # Ensure datetime conversion is correct
 monthly_trend['Month'] = pd.to_datetime(monthly_trend['Month'])
 
+# Plotting with matplotlib
 if not monthly_trend.empty:
-    st.line_chart(monthly_trend.set_index('Month'))
+    fig, ax = plt.subplots()
+    ax.plot(monthly_trend['Month'], monthly_trend['Ctd.total reg.'], marker='o', linestyle='-')
+    ax.set_title('Monthly Paint Consumption Trend')
+    ax.set_xlabel('Month')
+    ax.set_ylabel('Consumption')
+    ax.grid(True)
+    st.pyplot(fig)
 else:
     st.write("No data available for the selected options.")
