@@ -18,7 +18,7 @@ def apply_custom_style():
         "grid.linestyle": "--",
         "grid.linewidth": 0.5,
         "lines.linewidth": 2,
-        "lines.color": "#f5a623",  # Updated to lighter Ternium color
+        "lines.color": "#e31837",  # Ternium orange
         "legend.facecolor": "#0e1117",
         "legend.edgecolor": "white",
         "text.color": "white"
@@ -26,9 +26,8 @@ def apply_custom_style():
 
 apply_custom_style()
 
-# Updated Ternium colors
-ternium_light_orange = '#f5a623'
-ternium_dark_orange = '#e31837'
+# Color naranja de Ternium
+ternium_orange = '#e31837'
 
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
 
@@ -39,6 +38,7 @@ with open('style.css') as f:
 seattle_weather = pd.read_csv('seattle-weather.csv', parse_dates=['date'])
 rend_usuarios = pd.read_csv('Rend_usuarios.csv')
 paint_data = pd.read_csv('LitrosFiltrada (1).csv', parse_dates=['Registrado'])
+
 
 # Convert 'Registrado' column to datetime if not already
 paint_data['Registrado'] = pd.to_datetime(paint_data['Registrado'], errors='coerce')
@@ -88,60 +88,74 @@ col1.metric("Metros Cuadrados", f"{metros_cuadrados:,.2f} m²")
 col2.metric("Tiempo en Horas", f"{tiempo_horas:,.2f} horas")
 col3.metric("Metros por Hora", f"{metros_por_hora:,.2f} m/h")
 
-# Apply filters to paint data
-filtered_paint_data = paint_data.copy()
-if paint_option != 'All':
-    filtered_paint_data = filtered_paint_data[filtered_paint_data['Texto breve de material'] == paint_option]
-if line_option != 'All':
-    filtered_paint_data = filtered_paint_data[filtered_paint_data['Línea'] == line_option]
-if year_option != 'All':
-    filtered_paint_data = filtered_paint_data[filtered_paint_data['Registrado'].dt.year == int(year_option)]
-
 # Row B
 c1, c2 = st.columns((7,3))
 with c1:
     st.markdown('### Investment by Paint')
+    if paint_option != 'All':
+        investment_data = paint_data[paint_data['Texto breve de material'] == paint_option]
+    elif line_option != 'All':
+        investment_data = paint_data[paint_data['Línea'] == line_option]
+    elif year_option != 'All':
+        investment_data = paint_data[paint_data['Registrado'].dt.year == int(year_option)]
+    else:
+        investment_data = paint_data
+
     # Verify the existence of 'Valor total' column
-    if '    Valor var.' in filtered_paint_data.columns:
-        investment_summary = filtered_paint_data.groupby('Texto breve de material')['    Valor var.'].sum().reset_index()
+    if '    Valor var.' in investment_data.columns:
+        investment_summary = investment_data.groupby('Texto breve de material')['    Valor var.'].sum().reset_index()
         fig, ax = plt.subplots()
-        investment_summary.plot(kind='bar', x='Texto breve de material', y='    Valor var.', ax=ax, color=ternium_light_orange, legend=False)
+        investment_summary.plot(kind='bar', x='Texto breve de material', y='    Valor var.', ax=ax, color=ternium_orange, legend=False)
         ax.set_title('Inversión en las Top 20 Pinturas', fontsize=16, fontweight='bold', color='white')
         ax.set_xlabel('Pintura', fontsize=14, fontweight='bold', color='white')
         ax.set_ylabel('Valor', fontsize=14, fontweight='bold', color='white')
         ax.tick_params(axis='x', colors='white', rotation=45)
         ax.tick_params(axis='y', colors='white')
-        ax.get_yaxis().get_major_formatter().set_scientific(False)
-        for tick in ax.get_xticklabels():
-            tick.set_horizontalalignment('right')
         st.pyplot(fig)
     else:
         st.write("The 'Valor total' column is not found in the dataset.")
 
 with c2:
     st.markdown('### Donut chart')
-    litros_por_linea = filtered_paint_data.groupby('Línea')['Ctd.total reg.'].sum().reset_index()
-    litros_por_linea['Porcentaje'] = (litros_por_linea['Ctd.total reg.'] / litros_por_linea['Ctd.total reg.'].sum()) * 100
-    litros_por_linea.columns = ['Línea', 'Ctd_total_reg', 'Porcentaje']
+    data = pd.read_csv('Litros (1).csv')
+    litros_por_linea = data.groupby('Línea')['Ctd.total reg.'].sum()
+    total_litros = litros_por_linea.sum()
+    porcentajes_por_linea = (litros_por_linea / total_litros) * 100
+    porcentajes_por_linea = porcentajes_por_linea.reset_index()
+    porcentajes_por_linea.columns = ['Línea', 'Porcentaje']
     
-    # Verify and prepare the color_discrete_sequence argument
-    colors = [ternium_light_orange, ternium_dark_orange]
-    
-    st.write(litros_por_linea)  # Debugging output to verify data
-
     plost.donut_chart(
-        data=litros_por_linea,
+        data=porcentajes_por_linea,
         theta='Porcentaje',
         color='Línea',
-        legend='bottom',
-        color_discrete_sequence=colors, 
+        legend='bottom', 
         use_container_width=True)
 
 # Row C: Paint consumption trend line chart
 st.markdown('### Paint Consumption Line Chart')
 
+# Filter data based on selections
+if paint_option == 'All' and line_option == 'All' and year_option == 'All':
+    trend_data = paint_data
+elif paint_option == 'All' and line_option == 'All':
+    trend_data = paint_data[paint_data['Registrado'].dt.year == int(year_option)]
+elif paint_option == 'All' and year_option == 'All':
+    trend_data = paint_data[paint_data['Línea'] == line_option]
+elif line_option == 'All' and year_option == 'All':
+    trend_data = paint_data[paint_data['Texto breve de material'] == paint_option]
+elif paint_option == 'All':
+    trend_data = paint_data[(paint_data['Línea'] == line_option) & (paint_data['Registrado'].dt.year == int(year_option))]
+elif line_option == 'All':
+    trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & (paint_data['Registrado'].dt.year == int(year_option))]
+elif year_option == 'All':
+    trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & (paint_data['Línea'] == line_option)]
+else:
+    trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & 
+                            (paint_data['Línea'] == line_option) & 
+                            (paint_data['Registrado'].dt.year == int(year_option))]
+
 # Summarize data by month
-trend_data = filtered_paint_data.copy()
+trend_data = trend_data.copy()  # Avoid SettingWithCopyWarning
 trend_data['Month'] = trend_data['Registrado'].dt.to_period('M')
 monthly_trend = trend_data.groupby('Month')['Ctd.total reg.'].sum().reset_index()
 monthly_trend['Month'] = monthly_trend['Month'].dt.to_timestamp()
@@ -152,7 +166,7 @@ monthly_trend.set_index('Month', inplace=True)
 # Graficar si hay datos disponibles
 if not monthly_trend.empty:
     fig, ax = plt.subplots()
-    monthly_trend.plot(ax=ax, color=ternium_light_orange, legend=False)
+    monthly_trend.plot(ax=ax, color=ternium_orange, legend=False)
     ax.set_title('Tendencia de Consumo de Pintura', fontsize=16, fontweight='bold', color='white')
     ax.set_xlabel('Mes', fontsize=14, fontweight='bold', color='white')
     ax.set_ylabel('Cantidad Total Registrada', fontsize=14, fontweight='bold', color='white')
