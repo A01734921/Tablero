@@ -3,6 +3,13 @@ import pandas as pd
 import numpy as np
 import plost
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
+# Estilo minimalista para matplotlib
+plt.style.use('seaborn-darkgrid')
+
+# Color naranja de Ternium
+ternium_orange = '#e31837'
 
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
 
@@ -139,11 +146,16 @@ st.write(monthly_trend)
 # Graficar si hay datos disponibles
 if not monthly_trend.empty:
     fig, ax = plt.subplots()
-    monthly_trend.plot(ax=ax)
-    ax.set_title('Tendencia de Consumo de Pintura')
-    ax.set_xlabel('Mes')
-    ax.set_ylabel('Cantidad Total Registrada')
+    monthly_trend.plot(ax=ax, color=ternium_orange)
+    ax.set_title('Tendencia de Consumo de Pintura', fontsize=16, fontweight='bold', color='white')
+    ax.set_xlabel('Mes', fontsize=14, fontweight='bold', color='white')
+    ax.set_ylabel('Cantidad Total Registrada', fontsize=14, fontweight='bold', color='white')
+    ax.tick_params(axis='x', colors='white')
+    ax.tick_params(axis='y', colors='white')
+    ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+    fig.patch.set_facecolor('#0e1117')
+    ax.set_facecolor('#0e1117')
     st.pyplot(fig)
 else:
     st.write("No data available for the selected options.")
-
