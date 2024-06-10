@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plost
+import matplotlib.pyplot as plt
 
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
 
@@ -9,7 +10,7 @@ with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Load data
-seattle_weather = pd.read_csv('seattle-weather.csv', parse_dates=['date'])
+seattle_weather = pd.read_csv('data/seattle-weather.csv', parse_dates=['date'])
 rend_usuarios = pd.read_csv('Rend_usuarios.csv')
 paint_data = pd.read_csv('LitrosFiltrada (1).csv', parse_dates=['Registrado'])
 
@@ -137,6 +138,12 @@ st.write(monthly_trend)
 
 # Graficar si hay datos disponibles
 if not monthly_trend.empty:
-    st.line_chart(monthly_trend)
+    fig, ax = plt.subplots()
+    monthly_trend.plot(ax=ax)
+    ax.set_title('Tendencia de Consumo de Pintura')
+    ax.set_xlabel('Mes')
+    ax.set_ylabel('Cantidad Total Registrada')
+    st.pyplot(fig)
 else:
     st.write("No data available for the selected options.")
+
