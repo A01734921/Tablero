@@ -4,9 +4,6 @@ import plost
 
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
 
-with open('style.css') as f:
-    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-
 # Load data
 seattle_weather = pd.read_csv('https://raw.githubusercontent.com/tvst/plost/master/data/seattle-weather.csv', parse_dates=['date'])
 rend_usuarios = pd.read_csv('Rend_usuarios.csv')
