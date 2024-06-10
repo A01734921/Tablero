@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import altair as alt
 import plost
 
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
@@ -116,32 +115,12 @@ else:
                             (paint_data['Línea'] == line_option) & 
                             (paint_data['Registrado'].str[:4] == year_option)]
 
-# Debugging: Display the filtered data
-st.write("Filtered trend data:", trend_data)
-
 # Summarize data by month
 trend_data['Month'] = pd.to_datetime(trend_data['Registrado']).dt.to_period('M')
 monthly_trend = trend_data.groupby('Month')['Ctd.total reg.'].sum().reset_index()
 monthly_trend['Month'] = monthly_trend['Month'].dt.to_timestamp()
 
-# Debugging: Display the summarized data
-st.write("Monthly trend data:", monthly_trend)
-
-# Ensure datetime conversion is correct
-monthly_trend['Month'] = pd.to_datetime(monthly_trend['Month'])
-
-# Sort the data by date
-monthly_trend = monthly_trend.sort_values(by='Month')
-
-# Plotting with Altair
 if not monthly_trend.empty:
-    line_chart = alt.Chart(monthly_trend).mark_line(point=True).encode(
-        x=alt.X('Month:T', axis=alt.Axis(format='%b %Y')),
-        y=alt.Y('Ctd.total reg.:Q', axis=alt.Axis(title='Consumption')),
-        tooltip=['Month:T', 'Ctd.total reg.:Q']
-    ).properties(
-        title='Monthly Paint Consumption Trend'
-    ).interactive()
-    st.altair_chart(line_chart, use_container_width=True)
+    st.line_chart(monthly_trend.set_index('Month'))
 else:
     st.write("No data available for the selected options.")
