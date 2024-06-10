@@ -9,8 +9,8 @@ with open('style.css') as f:
 
 # Load data
 seattle_weather = pd.read_csv('https://raw.githubusercontent.com/tvst/plost/master/data/seattle-weather.csv', parse_dates=['date'])
-rend_usuarios = pd.read_csv('/mnt/data/Rend_usuarios.csv')
-paint_data = pd.read_csv('/mnt/data/LitrosFiltrada (1).csv')
+rend_usuarios = pd.read_csv('Rend_usuarios.csv')
+paint_data = pd.read_csv('LitrosFiltrada (1).csv')
 
 # Extract unique values for dropdown menus
 users = rend_usuarios['Usuario'].unique()
