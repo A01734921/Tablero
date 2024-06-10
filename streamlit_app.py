@@ -39,9 +39,6 @@ seattle_weather = pd.read_csv('seattle-weather.csv', parse_dates=['date'])
 rend_usuarios = pd.read_csv('Rend_usuarios.csv')
 paint_data = pd.read_csv('LitrosFiltrada (1).csv', parse_dates=['Registrado'])
 
-# Display the columns of the dataset
-st.write("Column names in the dataset:")
-st.write(paint_data.columns)
 
 # Convert 'Registrado' column to datetime if not already
 paint_data['Registrado'] = pd.to_datetime(paint_data['Registrado'], errors='coerce')
