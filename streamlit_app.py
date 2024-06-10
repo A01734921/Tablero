@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
+import altair as alt
 import plost
 
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
@@ -121,9 +121,15 @@ trend_data['Month'] = pd.to_datetime(trend_data['Registrado']).dt.to_period('M')
 monthly_trend = trend_data.groupby('Month')['Ctd.total reg.'].sum().reset_index()
 monthly_trend['Month'] = monthly_trend['Month'].dt.to_timestamp()
 
-# Plotting with plotly
+# Plotting with Altair
 if not monthly_trend.empty:
-    fig = px.line(monthly_trend, x='Month', y='Ctd.total reg.', title='Monthly Paint Consumption Trend')
-    st.plotly_chart(fig)
+    line_chart = alt.Chart(monthly_trend).mark_line(point=True).encode(
+        x='Month:T',
+        y='Ctd.total reg.:Q',
+        tooltip=['Month:T', 'Ctd.total reg.:Q']
+    ).properties(
+        title='Monthly Paint Consumption Trend'
+    )
+    st.altair_chart(line_chart, use_container_width=True)
 else:
     st.write("No data available for the selected options.")
