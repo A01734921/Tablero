@@ -119,7 +119,7 @@ with c1:
 
 with c2:
     st.markdown('### Donut chart')
-    data = pd.read_csv(paint_data)
+    data = paint_data
     litros_por_linea = data.groupby('Línea')['Ctd.total reg.'].sum()
     total_litros = litros_por_linea.sum()
     porcentajes_por_linea = (litros_por_linea / total_litros) * 100
