@@ -38,9 +38,6 @@ paint_option = st.sidebar.selectbox('Select Paint or All', ['All'] + list(paints
 line_option = st.sidebar.selectbox('Select Line or All', ['All'] + list(lines))
 year_option = st.sidebar.selectbox('Select Year or All', ['All'] + list(paint_years))
 
-st.sidebar.subheader('Line chart parameters')
-plot_height = st.sidebar.slider('Specify plot height', 200, 500, 250)
-
 st.sidebar.markdown('''
 ---
 Created with ❤️ by [Data Professor](https://youtube.com/dataprofessor/).
@@ -123,4 +120,7 @@ trend_data['Month'] = pd.to_datetime(trend_data['Registrado']).dt.to_period('M')
 monthly_trend = trend_data.groupby('Month')['Ctd.total reg.'].sum().reset_index()
 monthly_trend['Month'] = monthly_trend['Month'].dt.to_timestamp()
 
-st.line_chart(monthly_trend.set_index('Month'))
+if not monthly_trend.empty:
+    st.line_chart(monthly_trend.set_index('Month'))
+else:
+    st.write("No data available for the selected options.")
