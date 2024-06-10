@@ -49,7 +49,7 @@ lines = paint_data['Línea'].unique()
 paints = paint_data['Texto breve de material'].unique()
 paint_years = paint_data['Registrado'].dt.year.dropna().unique()
 
-st.sidebar.header('Dashboard Descriptivo)
+st.sidebar.header('Dashboard Descriptivo')
 
 st.sidebar.subheader('Select User, Year, and Month')
 selected_user = st.sidebar.selectbox('User', users)
