@@ -9,8 +9,8 @@ with open('style.css') as f:
 
 # Load data
 seattle_weather = pd.read_csv('https://raw.githubusercontent.com/tvst/plost/master/data/seattle-weather.csv', parse_dates=['date'])
-rend_usuarios = pd.read_csv('Rend_usuarios.csv')
-paint_data = pd.read_csv('LitrosFiltrada (1).csv')
+rend_usuarios = pd.read_csv('/mnt/data/Rend_usuarios.csv')
+paint_data = pd.read_csv('/mnt/data/LitrosFiltrada (1).csv')
 
 # Extract unique values for dropdown menus
 users = rend_usuarios['Usuario'].unique()
@@ -115,10 +115,16 @@ else:
                             (paint_data['Línea'] == line_option) & 
                             (paint_data['Registrado'].str[:4] == year_option)]
 
+# Debugging: Display the filtered data
+st.write("Filtered trend data:", trend_data)
+
 # Summarize data by month
 trend_data['Month'] = pd.to_datetime(trend_data['Registrado']).dt.to_period('M')
 monthly_trend = trend_data.groupby('Month')['Ctd.total reg.'].sum().reset_index()
 monthly_trend['Month'] = monthly_trend['Month'].dt.to_timestamp()
+
+# Debugging: Display the summarized data
+st.write("Monthly trend data:", monthly_trend)
 
 if not monthly_trend.empty:
     st.line_chart(monthly_trend.set_index('Month'))
