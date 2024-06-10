@@ -10,11 +10,15 @@ with open('style.css') as f:
 # Load data
 seattle_weather = pd.read_csv('https://raw.githubusercontent.com/tvst/plost/master/data/seattle-weather.csv', parse_dates=['date'])
 rend_usuarios = pd.read_csv('Rend_usuarios.csv')
+paint_data = pd.read_csv('LitrosFiltrada (1).csv')
 
 # Extract unique values for dropdown menus
 users = rend_usuarios['Usuario'].unique()
 years = rend_usuarios['Mes_Año'].str[:4].unique()
 months = rend_usuarios['Mes_Año'].str[5:7].unique()
+lines = paint_data['Línea'].unique()
+paints = paint_data['Texto breve de material'].unique()
+paint_years = paint_data['Registrado'].str[:4].unique()
 
 st.sidebar.header('Dashboard `version 2`')
 
@@ -73,7 +77,6 @@ with c1:
     use_container_width=True)
 with c2:
     st.markdown('### Donut chart')
-    # Assuming the 'Litros (1).csv' file is already loaded as 'data'
     data = pd.read_csv('Litros (1).csv')
     litros_por_linea = data.groupby('Línea')['Ctd.total reg.'].sum()
     total_litros = litros_por_linea.sum()
@@ -88,6 +91,36 @@ with c2:
         legend='bottom', 
         use_container_width=True)
 
-# Row C
-st.markdown('### Line chart')
-st.line_chart(seattle_weather, x = 'date', y = plot_data, height = plot_height)
+# Row C: Paint consumption trend line chart
+st.markdown('### Paint Consumption Line Chart')
+
+paint_option = st.selectbox('Select Paint or All', ['All'] + list(paints))
+line_option = st.selectbox('Select Line or All', ['All'] + list(lines))
+year_option = st.selectbox('Select Year or All', ['All'] + list(paint_years))
+
+# Filter data based on selections
+if paint_option == 'All' and line_option == 'All' and year_option == 'All':
+    trend_data = paint_data
+elif paint_option == 'All' and line_option == 'All':
+    trend_data = paint_data[paint_data['Registrado'].str[:4] == year_option]
+elif paint_option == 'All' and year_option == 'All':
+    trend_data = paint_data[paint_data['Línea'] == line_option]
+elif line_option == 'All' and year_option == 'All':
+    trend_data = paint_data[paint_data['Texto breve de material'] == paint_option]
+elif paint_option == 'All':
+    trend_data = paint_data[(paint_data['Línea'] == line_option) & (paint_data['Registrado'].str[:4] == year_option)]
+elif line_option == 'All':
+    trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & (paint_data['Registrado'].str[:4] == year_option)]
+elif year_option == 'All':
+    trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & (paint_data['Línea'] == line_option)]
+else:
+    trend_data = paint_data[(paint_data['Texto breve de material'] == paint_option) & 
+                            (paint_data['Línea'] == line_option) & 
+                            (paint_data['Registrado'].str[:4] == year_option)]
+
+# Summarize data by month
+trend_data['Month'] = pd.to_datetime(trend_data['Registrado']).dt.to_period('M')
+monthly_trend = trend_data.groupby('Month')['Ctd.total reg.'].sum().reset_index()
+monthly_trend['Month'] = monthly_trend['Month'].dt.to_timestamp()
+
+st.line_chart(monthly_trend.set_index('Month'))
