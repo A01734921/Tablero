@@ -121,18 +121,19 @@ with c1:
 with c2:
     st.markdown('### Donut chart')
     data = paint_data
-    litros_por_linea = data.groupby('Línea')['Ctd.total reg.'].sum()
-    total_litros = litros_por_linea.sum()
-    porcentajes_por_linea = (litros_por_linea / total_litros) * 100
-    porcentajes_por_linea = porcentajes_por_linea.reset_index()
-    porcentajes_por_linea.columns = ['Línea', 'Porcentaje']
+    litros_por_linea = data.groupby('Línea')['Ctd.total reg.'].sum().reset_index()
+    litros_por_linea['Porcentaje'] = (litros_por_linea['Ctd.total reg.'] / litros_por_linea['Ctd.total reg.'].sum()) * 100
+    litros_por_linea.columns = ['Línea', 'Ctd_total_reg', 'Porcentaje']
+    
+    # Verify and prepare the color_discrete_sequence argument
+    colors = [ternium_light_orange, ternium_dark_orange]
     
     plost.donut_chart(
-        data=porcentajes_por_linea,
+        data=litros_por_linea,
         theta='Porcentaje',
         color='Línea',
         legend='bottom',
-        color_discrete_sequence=[ternium_light_orange, ternium_dark_orange], 
+        color_discrete_sequence=colors, 
         use_container_width=True)
 
 # Row C: Paint consumption trend line chart
@@ -185,3 +186,5 @@ if not monthly_trend.empty:
     st.pyplot(fig)
 else:
     st.write("No data available for the selected options.")
+
+
