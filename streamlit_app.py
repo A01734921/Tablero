@@ -9,9 +9,9 @@ with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Load data
-seattle_weather = pd.read_csv('/mnt/data/seattle-weather.csv', parse_dates=['date'])
-rend_usuarios = pd.read_csv('/mnt/data/Rend_usuarios.csv')
-paint_data = pd.read_csv('/mnt/data/LitrosFiltrada (1).csv', parse_dates=['Registrado'])
+seattle_weather = pd.read_csv('seattle-weather.csv', parse_dates=['date'])
+rend_usuarios = pd.read_csv('Rend_usuarios.csv')
+paint_data = pd.read_csv('LitrosFiltrada (1).csv', parse_dates=['Registrado'])
 
 # Convert 'Registrado' column to datetime if not already
 paint_data['Registrado'] = pd.to_datetime(paint_data['Registrado'], errors='coerce')
@@ -73,7 +73,7 @@ with c1:
     st.line_chart(seattle_weather, x='date', y='temp_min', height=345)
 with c2:
     st.markdown('### Donut chart')
-    data = pd.read_csv('/mnt/data/Litros (1).csv')
+    data = pd.read_csv('data/Litros (1).csv')
     litros_por_linea = data.groupby('Línea')['Ctd.total reg.'].sum()
     total_litros = litros_por_linea.sum()
     porcentajes_por_linea = (litros_por_linea / total_litros) * 100
